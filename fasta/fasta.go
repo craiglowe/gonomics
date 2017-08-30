@@ -15,7 +15,7 @@ type Fasta struct {
 	seq  []dna.Base
 }
 
-func ReadFileToSlice(filename string) ([]Fasta, error) {
+func Read(filename string) ([]Fasta, error) {
 	var line string
 	var currSeq []dna.Base
 	var answer []Fasta
@@ -47,12 +47,12 @@ func ReadFileToSlice(filename string) ([]Fasta, error) {
 	return answer, scanner.Err()
 }
 
-func SliceToFile(records []Fasta, filename string) {
+func Write(filename string, records []Fasta) {
 	file, err := os.Create(filename)
 	common.FatalIfError(err)
 	defer file.Close()
 
 	for _, rec := range records {
-		fmt.Fprintf(file, ">%s\n%s\n", rec.name, rec.seq)
+		fmt.Fprintf(file, ">%s\n%s\n", rec.name, dna.BasesToString(rec.seq))
 	}
 }
