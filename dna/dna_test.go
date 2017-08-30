@@ -117,7 +117,7 @@ func TestAllLower(t *testing.T) {
 var comparisonTests = []struct {
 	inputOne              []Base // first seq
 	inputTwo              []Base // second seq
-	expectedIgnoringCase   int    // expected result when ignoring case
+	expectedIgnoringCase  int    // expected result when ignoring case
 	expectedCaseSensitive int    // expected result when considering case
 }{
 	{[]Base{A, C, G, T, N, a, c, g, t, n}, []Base{a, c, g, t, n, a, c, g, t, n}, 0, -1},

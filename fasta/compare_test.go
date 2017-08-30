@@ -46,20 +46,19 @@ func TestSortName(t *testing.T) {
 }
 
 var sortSeqTests = []struct {
-        input    []Fasta
-        expected []Fasta
+	input    []Fasta
+	expected []Fasta
 }{
-        {[]Fasta{{"apple", seqTwoA}, {"banana", seqTwoB}, {"carrot", seqTwoC}}, []Fasta{{"banana", seqTwoB}, {"carrot", seqTwoC}, {"apple", seqTwoA}}},
-        {[]Fasta{{"banana", seqTwoB}, {"apple", seqTwoA}, {"carrot", seqTwoC}}, []Fasta{{"banana", seqTwoB}, {"carrot", seqTwoC}, {"apple", seqTwoA}}},
-        {[]Fasta{{"carrot", seqTwoC}, {"apple", seqTwoA}, {"banana", seqTwoB}}, []Fasta{{"banana", seqTwoB}, {"carrot", seqTwoC}, {"apple", seqTwoA}}},
+	{[]Fasta{{"apple", seqTwoA}, {"banana", seqTwoB}, {"carrot", seqTwoC}}, []Fasta{{"banana", seqTwoB}, {"carrot", seqTwoC}, {"apple", seqTwoA}}},
+	{[]Fasta{{"banana", seqTwoB}, {"apple", seqTwoA}, {"carrot", seqTwoC}}, []Fasta{{"banana", seqTwoB}, {"carrot", seqTwoC}, {"apple", seqTwoA}}},
+	{[]Fasta{{"carrot", seqTwoC}, {"apple", seqTwoA}, {"banana", seqTwoB}}, []Fasta{{"banana", seqTwoB}, {"carrot", seqTwoC}, {"apple", seqTwoA}}},
 }
 
 func TestSortSeq(t *testing.T) {
 	for _, test := range sortSeqTests {
 		SortBySeq(test.input)
 		if !AllAreEqual(test.input, test.expected) {
-                        t.Errorf("Got %v when sorted by sequence, but expected %v.", test.input, test.expected)
-                }
-        }
+			t.Errorf("Got %v when sorted by sequence, but expected %v.", test.input, test.expected)
+		}
+	}
 }
-
