@@ -4,10 +4,14 @@ import (
 	"github.com/golang/glog"
 )
 
-func FatalIfError(err error) {
+func ExitIfError(err error) {
 	if err != nil {
 		glog.Exit(err)
 	}
+}
+
+func Exit(message string) {
+	glog.Exit(message)
 }
 
 // zero is silent
@@ -30,5 +34,25 @@ func Min(a int, b int) int {
 		return a
 	} else {
 		return b
+	}
+}
+
+func TripleMax(a int, b int, c int) int {
+	if a >= b && a >= c {
+		return a
+	} else if b >= c {
+		return b
+	} else {
+		return c
+	}
+}
+
+func TripleMin(a int, b int, c int) int {
+	if a <= b && a <= c {
+		return a
+	} else if b <= c {
+		return b
+	} else {
+		return c
 	}
 }

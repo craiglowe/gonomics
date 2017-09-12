@@ -28,7 +28,7 @@ func complement(b Base) Base {
 	case n:
 		return n
 	default:
-		common.FatalIfError(fmt.Errorf("Error: trying to reverse complement an unexpected base %d", b))
+		common.ExitIfError(fmt.Errorf("Error: trying to reverse complement an unexpected base %d", b))
 		return N
 	}
 }

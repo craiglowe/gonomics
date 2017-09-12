@@ -34,7 +34,7 @@ func runeToBase(r rune) (Base, error) {
 	}
 }
 
-func baseToRune(base Base) rune {
+func BaseToRune(base Base) rune {
 	switch base {
 	case A:
 		return 'A'
@@ -79,7 +79,7 @@ func BasesToString(bases []Base) string {
 	var buffer bytes.Buffer
 
 	for _, base := range bases {
-		buffer.WriteRune(baseToRune(base))
+		buffer.WriteRune(BaseToRune(base))
 	}
 	return buffer.String()
 }
