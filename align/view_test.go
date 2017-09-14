@@ -1,45 +1,46 @@
 package align
 
 import (
-	"fmt"
 	"github.com/craiglowe/gonomics/dna"
 	"testing"
 )
 
-var seqA, _ = dna.StringToBases("ACGT")
-var seqB, _ = dna.StringToBases("ACGT")
-var seqC, _ = dna.StringToBases("ACCGT")
-var seqD, _ = dna.StringToBases("ACGGT")
-var seqE, _ = dna.StringToBases("AGGAGGTTTACACGTG")
-var seqF, _ = dna.StringToBases("AGGAGGACACGAAAATG")
-var seqG, _ = dna.StringToBases("ACTTTTTTGGT")
-var seqH, _ = dna.StringToBases("AC")
-var seqI, _ = dna.StringToBases("ACC")
 var alignTests = []struct {
-	seqOne []dna.Base
-	seqTwo []dna.Base
+	seqOne string
+	seqTwo string
+	aln    string
 }{
-	{seqA, seqB},
-	{seqA, seqC},
-	{seqH, seqI},
-	{seqA, seqD},
-	{seqE, seqF},
-	{seqD, seqG},
-	{seqG, seqD},
+	{"ACGT", "ACGT", "ACGT\nACGT\n"},
+	{"ACGT", "CGT", "ACGT\n-CGT\n"},
+	{"ACGT", "ACG", "ACGT\nACG-\n"},
+	{"CGT", "ACGT", "-CGT\nACGT\n"},
+	{"ACG", "ACGT", "ACG-\nACGT\n"},
+	{"AGT", "ACGT", "A-GT\nACGT\n"},
+	{"ACT", "ACGT", "AC-T\nACGT\n"},
+	{"CGCGCGCGCG", "CGCGCGTTTTCGCG", "CGCGCG----CGCG\nCGCGCGTTTTCGCG\n"},
+	{"CGCGCGCGCG", "CGAAAACGCGTTTTCGCG", "CG----CGCG----CGCG\nCGAAAACGCGTTTTCGCG\n"},
 }
 
 func TestConstGap(t *testing.T) {
 	for _, test := range alignTests {
-		score, cigar := AlignConstGap(test.seqOne, test.seqTwo, defaultScores(), -430)
-		prettyAlignment := View(test.seqOne, test.seqTwo, cigar)
-		fmt.Printf("score=%d\n%s\n", score, prettyAlignment)
+		basesOne, _ := dna.StringToBases(test.seqOne)
+		basesTwo, _ := dna.StringToBases(test.seqTwo)
+		_, cigar := AlignConstGap(basesOne, basesTwo, defaultScores(), -430)
+		prettyAlignment := View(basesOne, basesTwo, cigar)
+		if prettyAlignment != test.aln {
+			t.Errorf("The alignment of %s and %s gave %s, but %s was expected", test.seqOne, test.seqTwo, prettyAlignment, test.aln)
+		}
 	}
 }
 
 func TestAffineGap(t *testing.T) {
 	for _, test := range alignTests {
-		score, cigar := AlignAffineGap(test.seqOne, test.seqTwo, defaultScores(), -400, -30)
-		prettyAlignment := View(test.seqOne, test.seqTwo, cigar)
-		fmt.Printf("score=%d\n%s\n", score, prettyAlignment)
+		basesOne, _ := dna.StringToBases(test.seqOne)
+		basesTwo, _ := dna.StringToBases(test.seqTwo)
+		_, cigar := AlignAffineGap(basesOne, basesTwo, defaultScores(), -400, -30)
+		prettyAlignment := View(basesOne, basesTwo, cigar)
+		if prettyAlignment != test.aln {
+			t.Errorf("The alignment of %s and %s gave %s, but %s was expected", test.seqOne, test.seqTwo, prettyAlignment, test.aln)
+		}
 	}
 }
