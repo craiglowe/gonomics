@@ -17,10 +17,13 @@ const (
 	g Base = 7
 	t Base = 8
 	n Base = 9
+	gap Base = 10
 )
 
 func ToUpper(b Base) Base {
-	if b > N {
+	if b == gap {
+		return b
+	} else if b > N {
 		return b - 5
 	} else {
 		return b
@@ -28,7 +31,9 @@ func ToUpper(b Base) Base {
 }
 
 func ToLower(b Base) Base {
-	if b < a {
+	if b == gap {
+		return b
+	} else if b < a {
 		return b + 5
 	} else {
 		return b
