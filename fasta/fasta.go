@@ -49,7 +49,7 @@ func Read(filename string) ([]Fasta, error) {
 
 func Write(filename string, records []Fasta) {
 	file, err := os.Create(filename)
-	common.FatalIfError(err)
+	common.ExitIfError(err)
 	defer file.Close()
 
 	for _, rec := range records {
