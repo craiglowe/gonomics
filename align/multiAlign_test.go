@@ -9,7 +9,7 @@ var multiAlignTests = []struct {
 	input string
 	expected string
 }{
-	{"testData/multiAlignTest.in.fa", "testData/multiAlignTest.expected.fa"},
+	{"testdata/multiAlignTest.in.fa", "testdata/multiAlignTest.expected.fa"},
 }
 
 func TestMultiAlignGap(t *testing.T) {
@@ -22,8 +22,8 @@ func TestMultiAlignGap(t *testing.T) {
 		aligned := AllSeqAffine(input)
 
 		if !fasta.AllAreEqualIgnoreOrder(aligned, expected) {
-			fasta.Write("testData/multiAlignTest.tmp", aligned)
-			t.Error("Alignment not as expected: 'testData/multiAlignTest.tmp' does not equal '%s'.", test.expected)
+			fasta.Write("testdata/multiAlignTest.tmp", aligned)
+			t.Error("Alignment not as expected: testdata/multiAlignTest.tmp does not equal %s.", test.expected)
 		}
 	}
 }
