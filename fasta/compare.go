@@ -7,15 +7,15 @@ import (
 )
 
 func compareName(alpha Fasta, beta Fasta) int {
-	return strings.Compare(alpha.name, beta.name)
+	return strings.Compare(alpha.Name, beta.Name)
 }
 
 func compareSeq(alpha Fasta, beta Fasta) int {
-	return dna.CompareSeqsCaseSensitive(alpha.seq, beta.seq)
+	return dna.CompareSeqsCaseSensitive(alpha.Seq, beta.Seq)
 }
 
 func compareSeqIgnoreCase(alpha Fasta, beta Fasta) int {
-	return dna.CompareSeqsIgnoreCase(alpha.seq, beta.seq)
+	return dna.CompareSeqsIgnoreCase(alpha.Seq, beta.Seq)
 }
 
 func isEqual(alpha Fasta, beta Fasta) bool {
@@ -26,16 +26,28 @@ func isEqual(alpha Fasta, beta Fasta) bool {
 	}
 }
 
-func AllAreEqual(alpha []Fasta, beta []Fasta) bool {
+func allEqual(alpha []Fasta, beta []Fasta, ignoreOrder bool) bool {
 	if len(alpha) != len(beta) {
-		return false
+                return false
+        }
+	if ignoreOrder {
+		SortByName(alpha)
+		SortByName(beta)
 	}
-	for idx, _ := range alpha {
-		if !isEqual(alpha[idx], beta[idx]) {
-			return false
-		}
-	}
-	return true
+        for idx, _ := range alpha {
+                if !isEqual(alpha[idx], beta[idx]) {
+                        return false
+                }
+        }
+        return true
+}
+
+func AllAreEqual(alpha []Fasta, beta []Fasta) bool {
+	return allEqual(alpha, beta, false)
+}
+
+func AllAreEqualIgnoreOrder(alpha []Fasta, beta []Fasta) bool {
+        return allEqual(alpha, beta, true)
 }
 
 func SortByName(seqs []Fasta) {

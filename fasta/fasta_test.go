@@ -32,7 +32,7 @@ func TestWriteAndRead(t *testing.T) {
 		Write(test.filename+".tmp", test.data)
 		actual, err := Read(test.filename + ".tmp")
 		if err != nil {
-			t.Errorf("Reading %s gave an error..", test.filename)
+			t.Errorf("Reading %s gave an error.", test.filename)
 		}
 		if !AllAreEqual(test.data, actual) {
 			t.Errorf("The %s file was not read correctly.", test.filename)

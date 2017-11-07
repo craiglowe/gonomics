@@ -11,8 +11,8 @@ import (
 )
 
 type Fasta struct {
-	name string
-	seq  []dna.Base
+	Name string
+	Seq  []dna.Base
 }
 
 func Read(filename string) ([]Fasta, error) {
@@ -34,14 +34,14 @@ func Read(filename string) ([]Fasta, error) {
 		case strings.HasPrefix(line, "#"):
 			// comment line in fasta file
 		case strings.HasPrefix(line, ">"):
-			answer = append(answer, Fasta{name: line[1:len(line)]})
+			answer = append(answer, Fasta{Name: line[1:len(line)]})
 			seqIdx++
 		default:
 			currSeq, err = dna.StringToBases(line)
 			if err != nil {
 				log.Fatal(err)
 			}
-			answer[seqIdx].seq = append(answer[seqIdx].seq, currSeq...)
+			answer[seqIdx].Seq = append(answer[seqIdx].Seq, currSeq...)
 		}
 	}
 	return answer, scanner.Err()
@@ -53,6 +53,6 @@ func Write(filename string, records []Fasta) {
 	defer file.Close()
 
 	for _, rec := range records {
-		fmt.Fprintf(file, ">%s\n%s\n", rec.name, dna.BasesToString(rec.seq))
+		fmt.Fprintf(file, ">%s\n%s\n", rec.Name, dna.BasesToString(rec.Seq))
 	}
 }

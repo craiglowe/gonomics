@@ -7,21 +7,21 @@ import (
 type Base byte
 
 const (
-	A Base = 0
-	C Base = 1
-	G Base = 2
-	T Base = 3
-	N Base = 4
-	a Base = 5
-	c Base = 6
-	g Base = 7
-	t Base = 8
-	n Base = 9
-	gap Base = 10
+	A   Base = 0
+	C   Base = 1
+	G   Base = 2
+	T   Base = 3
+	N   Base = 4
+	a   Base = 5
+	c   Base = 6
+	g   Base = 7
+	t   Base = 8
+	n   Base = 9
+	Gap Base = 10
 )
 
 func ToUpper(b Base) Base {
-	if b == gap {
+	if b == Gap {
 		return b
 	} else if b > N {
 		return b - 5
@@ -31,7 +31,7 @@ func ToUpper(b Base) Base {
 }
 
 func ToLower(b Base) Base {
-	if b == gap {
+	if b == Gap {
 		return b
 	} else if b < a {
 		return b + 5

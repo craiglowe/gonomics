@@ -32,8 +32,8 @@ func printCigar(operations []cigar) string {
 
 func View(alpha []dna.Base, beta []dna.Base, operations []cigar) string {
 	var seqOne, seqTwo bytes.Buffer
-	var i, j uint
-	var count uint64
+	var i, j int
+	var count int64
 	for _, operation := range operations {
 		for count = 0; count < operation.runLength; count++ {
 			switch operation.op {

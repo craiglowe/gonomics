@@ -30,7 +30,7 @@ func runeToBase(r rune) (Base, error) {
 	case 'n':
 		return n, nil
 	case '-':
-		return gap, nil
+		return Gap, nil
 	default:
 		return N, fmt.Errorf("dna: unexpected character in dna %r", r)
 	}
@@ -58,7 +58,7 @@ func BaseToRune(base Base) rune {
 		return 't'
 	case n:
 		return 'n'
-	case gap:
+	case Gap:
 		return '-'
 	default:
 		log.Fatal(fmt.Errorf("dna: unexpected value in dna Base when converting to rune %u", base))

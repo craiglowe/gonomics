@@ -17,7 +17,7 @@ const (
 )
 
 type cigar struct {
-	runLength uint64
+	runLength int64
 	op        colType
 }
 

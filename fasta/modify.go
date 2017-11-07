@@ -6,8 +6,8 @@ import (
 )
 
 func ReverseComplement(record *Fasta) {
-	record.name = fmt.Sprintf("%s_revComp", record.name)
-	dna.ReverseComplement(record.seq)
+	record.Name = fmt.Sprintf("%s_revComp", record.Name)
+	dna.ReverseComplement(record.Seq)
 }
 
 func ReverseComplementAll(records []Fasta) {

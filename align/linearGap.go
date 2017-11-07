@@ -5,7 +5,7 @@ import (
 	"github.com/craiglowe/gonomics/dna"
 )
 
-func AlignConstGap(alpha []dna.Base, beta []dna.Base, scores [5][5]int64, gapPen int64) (int64, []cigar) {
+func ConstGap(alpha []dna.Base, beta []dna.Base, scores [5][5]int64, gapPen int64) (int64, []cigar) {
 	m := make([][]int64, len(alpha)+1)
 	trace := make([][]colType, len(alpha)+1)
 	for idx := range m {
