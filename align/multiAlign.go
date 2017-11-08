@@ -25,7 +25,7 @@ func nearestGroups(groups [][]fasta.Fasta) (bestX int, bestY int, bestScore int6
 	var score int64
 	bestScore = 0
 	for x := 0; x < len(groups)-1; x++ {
-		for y := x+1; y < len(groups); y++ {
+		for y := x + 1; y < len(groups); y++ {
 			score, route = multipleAffineGap(groups[x], groups[y], defaultScores(), -400, -30)
 			if score > bestScore {
 				bestX, bestY, bestScore, bestRoute = x, y, score, route
@@ -37,7 +37,7 @@ func nearestGroups(groups [][]fasta.Fasta) (bestX int, bestY int, bestScore int6
 
 func AllSeqAffine(records []fasta.Fasta) []fasta.Fasta {
 	groups := fastaListToIndividualGroups(records)
-	for ; len(groups) > 1; {
+	for len(groups) > 1 {
 		x, y, _, route := nearestGroups(groups)
 		groups = mergeFastaGroups(groups, x, y, route)
 	}

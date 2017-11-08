@@ -28,18 +28,18 @@ func isEqual(alpha Fasta, beta Fasta) bool {
 
 func allEqual(alpha []Fasta, beta []Fasta, ignoreOrder bool) bool {
 	if len(alpha) != len(beta) {
-                return false
-        }
+		return false
+	}
 	if ignoreOrder {
 		SortByName(alpha)
 		SortByName(beta)
 	}
-        for idx, _ := range alpha {
-                if !isEqual(alpha[idx], beta[idx]) {
-                        return false
-                }
-        }
-        return true
+	for idx, _ := range alpha {
+		if !isEqual(alpha[idx], beta[idx]) {
+			return false
+		}
+	}
+	return true
 }
 
 func AllAreEqual(alpha []Fasta, beta []Fasta) bool {
@@ -47,7 +47,7 @@ func AllAreEqual(alpha []Fasta, beta []Fasta) bool {
 }
 
 func AllAreEqualIgnoreOrder(alpha []Fasta, beta []Fasta) bool {
-        return allEqual(alpha, beta, true)
+	return allEqual(alpha, beta, true)
 }
 
 func SortByName(seqs []Fasta) {
