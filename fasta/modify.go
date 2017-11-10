@@ -5,8 +5,17 @@ import (
 	"github.com/craiglowe/gonomics/dna"
 )
 
+func AppendToName(record *Fasta, addition string) {
+	record.Name = fmt.Sprintf("%s%s", record.Name, addition)
+}
+
+func AppendToNameAll(records []Fasta, addition string) {
+	for idx, _ := range records {
+		AppendToName(&records[idx], addition)
+	}
+}
+
 func ReverseComplement(record *Fasta) {
-	record.Name = fmt.Sprintf("%s_revComp", record.Name)
 	dna.ReverseComplement(record.Seq)
 }
 
