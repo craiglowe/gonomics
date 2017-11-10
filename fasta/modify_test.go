@@ -15,7 +15,7 @@ var allRevCompTests = []struct {
 	input    []Fasta
 	expected []Fasta
 }{
-	{[]Fasta{{"apple", seqThreeA}, {"banana", seqThreeB}, {"carrot", seqThreeC}}, []Fasta{{"apple_revComp", rcSeqThreeA}, {"banana_revComp", rcSeqThreeB}, {"carrot_revComp", rcSeqThreeC}}},
+	{[]Fasta{{"apple", seqThreeA}, {"banana", seqThreeB}, {"carrot", seqThreeC}}, []Fasta{{"apple", rcSeqThreeA}, {"banana", rcSeqThreeB}, {"carrot", rcSeqThreeC}}},
 }
 
 func TestReverseComplement(t *testing.T) {
