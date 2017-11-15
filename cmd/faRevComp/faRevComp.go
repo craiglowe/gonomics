@@ -35,14 +35,16 @@ func main() {
 	var expectedNumArgs int = 2
 	var keepName *bool = flag.Bool("keepName", false, "keep the sequence name the same instead of appending \"_revComp\"")
 	flag.Usage = usage
+	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
+	flag.Parse()
 
-	if len(flag.Args())-1 != expectedNumArgs {
+	if len(flag.Args()) != expectedNumArgs {
 		flag.Usage()
 		log.Fatalf("Error: expecting %d arguments, but got %d\n", expectedNumArgs, len(flag.Args()))
 	}
 
-	inFile := flag.Arg(1)
-	outFile := flag.Arg(2)
+	inFile := flag.Arg(0)
+	outFile := flag.Arg(1)
 
 	faRevComp(inFile, outFile, *keepName)
 }
