@@ -1,24 +1,17 @@
 package common
 
 import (
-	"github.com/golang/glog"
+	"log"
 )
 
 func ExitIfError(err error) {
 	if err != nil {
-		glog.Exit(err)
+		log.Fatal(err)
 	}
 }
 
 func Exit(message string) {
-	glog.Exit(message)
-}
-
-// zero is silent
-// one is basic
-// two is detailed
-func Info(level glog.Level, s string) {
-	glog.V(level).Info(s)
+	log.Fatal(message)
 }
 
 func Max(a int, b int) int {
