@@ -46,7 +46,8 @@ func Read(filename string) ([]Fasta, error) {
 	return answer, scanner.Err()
 }
 
-func Write(filename string, records []Fasta, lineLength int) error {
+func Write(filename string, records []Fasta) error {
+	lineLength := 50
 	file, err := os.Create(filename)
 	if err != nil {
 		return err

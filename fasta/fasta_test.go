@@ -32,7 +32,7 @@ func TestWriteAndRead(t *testing.T) {
 	var actual []Fasta
 	for _, test := range readWriteTests {
 		tempFile := test.filename + ".tmp"
-		err := Write(tempFile, test.data, 50)
+		err := Write(tempFile, test.data)
 		if err != nil {
 			t.Errorf("Error writing %s as a temp fasta file", tempFile)
 		}
