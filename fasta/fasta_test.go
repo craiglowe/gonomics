@@ -2,8 +2,8 @@ package fasta
 
 import (
 	"github.com/craiglowe/gonomics/dna"
-	"testing"
 	"os"
+	"testing"
 )
 
 var seqOneA, _ = dna.StringToBases("ACGTacgTCATCATCATTACTACTAC")
@@ -29,19 +29,23 @@ func TestRead(t *testing.T) {
 }
 
 func TestWriteAndRead(t *testing.T) {
+	var actual []Fasta
 	for _, test := range readWriteTests {
 		tempFile := test.filename + ".tmp"
-		Write(tempFile, test.data)
-		actual, err := Read(tempFile)
+		err := Write(tempFile, test.data, 50)
 		if err != nil {
-			t.Errorf("Reading %s gave an error.", test.filename)
+			t.Errorf("Error writing %s as a temp fasta file", tempFile)
+		}
+		actual, err = Read(tempFile)
+		if err != nil {
+			t.Errorf("Reading %s gave an error", test.filename)
 		}
 		if !AllAreEqual(test.data, actual) {
 			t.Errorf("The %s file was not read correctly.", test.filename)
 		}
 		err = os.Remove(tempFile)
 		if err != nil {
-                        t.Errorf("Deleting temp file %s gave an error.", tempFile)
-                }
+			t.Errorf("Deleting temp file %s gave an error.", tempFile)
+		}
 	}
 }

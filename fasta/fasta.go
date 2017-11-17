@@ -3,7 +3,6 @@ package fasta
 import (
 	"bufio"
 	"fmt"
-	"github.com/craiglowe/gonomics/common"
 	"github.com/craiglowe/gonomics/dna"
 	"log"
 	"os"
@@ -47,12 +46,22 @@ func Read(filename string) ([]Fasta, error) {
 	return answer, scanner.Err()
 }
 
-func Write(filename string, records []Fasta) {
+func Write(filename string, records []Fasta, lineLength int) error {
 	file, err := os.Create(filename)
-	common.ExitIfError(err)
+	if err != nil {
+		return err
+	}
 	defer file.Close()
 
 	for _, rec := range records {
-		fmt.Fprintf(file, ">%s\n%s\n", rec.Name, dna.BasesToString(rec.Seq))
+		fmt.Fprintf(file, ">%s\n", rec.Name)
+		for i := 0; i < len(rec.Seq); i += lineLength {
+			if i+lineLength > len(rec.Seq) {
+				fmt.Fprintf(file, "%s\n", dna.BasesToString(rec.Seq[i:]))
+			} else {
+				fmt.Fprintf(file, "%s\n", dna.BasesToString(rec.Seq[i:i+lineLength]))
+			}
+		}
 	}
+	return nil
 }
