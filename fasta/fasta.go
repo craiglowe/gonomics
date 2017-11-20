@@ -46,7 +46,7 @@ func Read(filename string) ([]Fasta, error) {
 	return answer, scanner.Err()
 }
 
-func writeToFileHandle(file *os.File, records []Fasta, lineLength int) error {
+func WriteToFileHandle(file *os.File, records []Fasta, lineLength int) error {
 	var err error
 	for _, rec := range records {
                 _, err = fmt.Fprintf(file, ">%s\n", rec.Name)
@@ -71,7 +71,7 @@ func Write(filename string, records []Fasta) error {
 	}
 	defer file.Close()
 
-	return writeToFileHandle(file, records, lineLength)
+	return WriteToFileHandle(file, records, lineLength)
 }
 
 func WriteGroups(filename string, groups [][]Fasta) error {
@@ -83,7 +83,7 @@ func WriteGroups(filename string, groups [][]Fasta) error {
         defer file.Close()
 
 	for i, _ := range groups {
-		err := writeToFileHandle(file, groups[i], lineLength)
+		err := WriteToFileHandle(file, groups[i], lineLength)
 		if err != nil { return err }
 		_, err = fmt.Fprint(file, "\n")
                 if err != nil { return err }
