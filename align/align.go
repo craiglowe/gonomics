@@ -47,3 +47,11 @@ func reverseCigar(alpha []cigar) {
 		alpha[i], alpha[j] = alpha[j], alpha[i]
 	}
 }
+
+func countAlignmentColumns(route []cigar) int64 {
+	var count int64 = 0
+	for i, _ := range route {
+		count += route[i].runLength
+	}
+	return count
+}

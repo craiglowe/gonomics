@@ -76,11 +76,9 @@ func AffineGap(alpha []dna.Base, beta []dna.Base, scores [5][5]int64, gapOpen in
 				m[1][i][j] = gapExtend + m[1][i][j-1]
 				trace[1][i][j] = colI /*new*/
 				m[2][i][j] = veryNegNum
-				/*trace[2][i][j] = colI*/
 			} else if j == 0 {
 				m[0][i][j] = veryNegNum
 				m[1][i][j] = veryNegNum
-				/*trace[1][i][j] = colD*/
 				m[2][i][j] = gapExtend + m[2][i-1][j]
 				trace[2][i][j] = colD /*new*/
 			} else {
@@ -117,13 +115,13 @@ func AffineGapChunk(alpha []dna.Base, beta []dna.Base, scores [5][5]int64, gapOp
 				m[2][i][j] = gapOpen
 			} else if i == 0 {
 				m[0][i][j] = veryNegNum
-				m[1][i][j] = gapExtend*int64(chunkSize) + m[1][i][j-1]
+				m[1][i][j] = gapExtend*chunkSize + m[1][i][j-1]
 				trace[1][i][j] = colI
 				m[2][i][j] = veryNegNum
 			} else if j == 0 {
 				m[0][i][j] = veryNegNum
 				m[1][i][j] = veryNegNum
-				m[2][i][j] = gapExtend*int64(chunkSize) + m[2][i-1][j]
+				m[2][i][j] = gapExtend*chunkSize + m[2][i-1][j]
 				trace[2][i][j] = colD
 			} else {
 				chunkScore = ungappedRegionScore(alpha, int64(i-1)*chunkSize, beta, int64(j-1)*chunkSize, chunkSize, scores)
@@ -138,72 +136,6 @@ func AffineGapChunk(alpha []dna.Base, beta []dna.Base, scores [5][5]int64, gapOp
 	expandCigarRunLength(route, chunkSize)
 
 	return maxScore, route
-}
-
-//average of pairs scoring scheme where gaps are ignored
-//maybe there should be a small penalty for gaps so that gaps will tend to be in the same location
-func scoreColumnMatch(alpha []fasta.Fasta, beta []fasta.Fasta, alphaCol int, betaCol int, scores [5][5]int64) int64 {
-	var sum, count int64 = 0, 0
-	for alphaSeqIdx, _ := range alpha {
-		for betaSeqIdx, _ := range beta {
-			if alpha[alphaSeqIdx].Seq[alphaCol] != dna.Gap && beta[betaSeqIdx].Seq[betaCol] != dna.Gap {
-				sum += scores[alpha[alphaSeqIdx].Seq[alphaCol]][beta[betaSeqIdx].Seq[betaCol]]
-				count++
-			}
-		}
-	}
-	return sum / count
-}
-
-func countAlignmentColumns(route []cigar) int64 {
-	var count int64 = 0
-	for i, _ := range route {
-		count += route[i].runLength
-	}
-	return count
-}
-
-func mergeMultipleAlignments(alpha []fasta.Fasta, beta []fasta.Fasta, route []cigar) []fasta.Fasta {
-	answer := make([]fasta.Fasta, len(alpha)+len(beta))
-	totalCols := countAlignmentColumns(route)
-
-	for i, _ := range answer {
-		if i < len(alpha) {
-			answer[i] = fasta.Fasta{Name: alpha[i].Name, Seq: make([]dna.Base, totalCols)}
-		} else {
-			answer[i] = fasta.Fasta{Name: beta[i-len(alpha)].Name, Seq: make([]dna.Base, totalCols)}
-		}
-	}
-
-	var alphaCol, betaCol, ansCol int = 0, 0, 0
-	for i, _ := range route {
-		for j := 0; j < int(route[i].runLength); j++ {
-			for k, _ := range answer {
-				if k < len(alpha) {
-					if route[i].op == colM || route[i].op == colD {
-						answer[k].Seq[ansCol] = alpha[k].Seq[alphaCol]
-					} else {
-						answer[k].Seq[ansCol] = dna.Gap
-					}
-				} else {
-					if route[i].op == colM || route[i].op == colI {
-						answer[k].Seq[ansCol] = beta[k-len(alpha)].Seq[betaCol]
-					} else {
-						answer[k].Seq[ansCol] = dna.Gap
-					}
-				}
-			}
-			switch route[i].op {
-			case colM:
-				alphaCol, betaCol, ansCol = alphaCol+1, betaCol+1, ansCol+1
-			case colI:
-				betaCol, ansCol = betaCol+1, ansCol+1
-			case colD:
-				alphaCol, ansCol = alphaCol+1, ansCol+1
-			}
-		}
-	}
-	return answer
 }
 
 func multipleAffineGap(alpha []fasta.Fasta, beta []fasta.Fasta, scores [5][5]int64, gapOpen int64, gapExtend int64) (int64, []cigar) {
@@ -234,5 +166,50 @@ func multipleAffineGap(alpha []fasta.Fasta, beta []fasta.Fasta, scores [5][5]int
 	}
 
 	maxScore, route := affineTrace(m, trace)
+	return maxScore, route
+}
+
+func multipleAffineGapChunk(alpha []fasta.Fasta, beta []fasta.Fasta, scores [5][5]int64, gapOpen int64, gapExtend int64, chunkSize int64) (int64, []cigar) {
+	var alphaSize, betaSize int64 = int64(len(alpha[0].Seq)), int64(len(beta[0].Seq))
+	if alphaSize%chunkSize != 0 {
+		common.Exit(fmt.Sprintf("Error: the first subalignment has a length of %d, when it should be a multiple of %d\n", alphaSize, chunkSize))
+	}
+	if betaSize%chunkSize != 0 {
+		common.Exit(fmt.Sprintf("Error: the second subalignment has a length of %d, when it should be a multiple of %d\n", betaSize, chunkSize))
+	}
+	alphaChunks := alphaSize / chunkSize
+	betaChunks := betaSize / chunkSize
+
+	m, trace := initAffineScoringAndTrace(int(alphaChunks), int(betaChunks))
+
+	var chunkScore int64
+	for i, _ := range m[0] {
+		for j, _ := range m[0][0] {
+			if i == 0 && j == 0 {
+				m[0][i][j] = 0
+				m[1][i][j] = gapOpen
+				m[2][i][j] = gapOpen
+			} else if i == 0 {
+				m[0][i][j] = veryNegNum
+				m[1][i][j] = gapExtend*chunkSize + m[1][i][j-1]
+				trace[1][i][j] = colI
+				m[2][i][j] = veryNegNum
+			} else if j == 0 {
+				m[0][i][j] = veryNegNum
+				m[1][i][j] = veryNegNum
+				m[2][i][j] = gapExtend*chunkSize + m[2][i-1][j]
+				trace[2][i][j] = colD
+			} else {
+				chunkScore = ungappedRegionColumnScore(alpha, (i-1)*int(chunkSize), beta, (j-1)*int(chunkSize), int(chunkSize), scores)
+				m[0][i][j], trace[0][i][j] = tripleMaxTrace(chunkScore+m[0][i-1][j-1], chunkScore+m[1][i-1][j-1], chunkScore+m[2][i-1][j-1])
+				m[1][i][j], trace[1][i][j] = tripleMaxTrace(gapOpen+gapExtend*chunkSize+m[0][i][j-1], gapExtend*chunkSize+m[1][i][j-1], gapOpen+gapExtend*chunkSize+m[2][i][j-1])
+				m[2][i][j], trace[2][i][j] = tripleMaxTrace(gapOpen+gapExtend*chunkSize+m[0][i-1][j], gapOpen+gapExtend*chunkSize+m[1][i-1][j], gapExtend*chunkSize+m[2][i-1][j])
+			}
+		}
+	}
+
+	maxScore, route := affineTrace(m, trace)
+	expandCigarRunLength(route, chunkSize)
+
 	return maxScore, route
 }

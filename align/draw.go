@@ -3,9 +3,12 @@ package align
 import (
 	"fmt"
 	"github.com/craiglowe/gonomics/dna"
+	"github.com/craiglowe/gonomics/draw"
 	"github.com/craiglowe/gonomics/fasta"
+	"image"
 	"image/color"
 	"sort"
+	"strings"
 )
 
 type keyValue struct {
@@ -43,4 +46,34 @@ func determineChunkColors(aln []fasta.Fasta, chunkSize int, palette color.Palett
 	}
 
 	return answer, nil
+}
+
+func drawAlignedChunks(aln []fasta.Fasta, chunkSize int, chunkPixelWidth int, chunkPixelHeight int, border int, seqPixelSpacing int) (*image.RGBA, error) {
+	colorMap, err := determineChunkColors(aln, chunkSize, draw.TrubetskoyPalette[:19])
+	if err != nil {
+		return nil, err
+	}
+	allGaps := strings.Repeat("-", chunkSize)
+	colorMap[allGaps] = draw.TrubetskoyPalette[21]
+
+	alnLength := len(aln[0].Seq)
+	numSeq := len(aln)
+	imageWidth := border*2 + alnLength/chunkSize*chunkPixelWidth
+	imageHeight := border*2 + chunkPixelHeight*numSeq
+	img := image.NewRGBA(image.Rect(0, 0, imageWidth, imageHeight))
+	for i, _ := range aln {
+		for chunkStart := 0; chunkStart < len(aln[i].Seq); chunkStart += chunkSize {
+			chunkText := dna.BasesToString(aln[i].Seq[chunkStart:(chunkStart + chunkSize)])
+			chunkColor, found := colorMap[chunkText]
+			if !found {
+				chunkColor = draw.TrubetskoyPalette[19]
+			}
+			xStart := border + chunkStart/chunkSize*chunkPixelWidth
+			xEnd := xStart + chunkPixelWidth
+			yStart := border + i*chunkPixelHeight
+			yEnd := yStart + chunkPixelHeight
+			draw.FilledRectangle(img, xStart, yStart, xEnd, yEnd, chunkColor)
+		}
+	}
+	return img, nil
 }
