@@ -6,13 +6,13 @@ import (
 )
 
 func HLine(img *image.RGBA, xStart int, xEnd int, y int, col color.Color) {
-	for x := xStart; x <= xEnd; x++ {
+	for x := xStart; x < xEnd; x++ {
 		img.Set(x, y, col)
 	}
 }
 
 func VLine(img *image.RGBA, x int, yStart int, yEnd int, col color.Color) {
-	for y := yStart; y <= yEnd; y++ {
+	for y := yStart; y < yEnd; y++ {
 		img.Set(x, y, col)
 	}
 }
@@ -25,8 +25,8 @@ func Rectangle(img *image.RGBA, xOne int, yOne int, xTwo int, yTwo int, col colo
 }
 
 func FilledRectangle(img *image.RGBA, xOne int, yOne int, xTwo int, yTwo int, col color.Color) {
-	for x := xOne; x <= xTwo; x++ {
-		for y := yOne; y <= yTwo; y++ {
+	for x := xOne; x < xTwo; x++ {
+		for y := yOne; y < yTwo; y++ {
 			img.Set(x, y, col)
 		}
 	}
