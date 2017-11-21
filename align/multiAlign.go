@@ -2,7 +2,6 @@ package align
 
 import (
 	"math"
-	"fmt"
 	"github.com/craiglowe/gonomics/dna"
 	"github.com/craiglowe/gonomics/fasta"
 )
@@ -66,7 +65,6 @@ func AllSeqAffineChunk(records []fasta.Fasta, chunkSize int) []fasta.Fasta {
 	groups := fastaListToIndividualGroups(records)
 	for len(groups) > 1 {
 		x, y, _, route := nearestGroupsChunk(groups, chunkSize)
-		fmt.Printf("len(groups)=%d merging %d and %d\n", len(groups), x, y)
 		groups = mergeFastaGroups(groups, x, y, route)
 	}
 	return groups[0]
