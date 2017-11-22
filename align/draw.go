@@ -36,10 +36,18 @@ func determineChunkColors(aln []fasta.Fasta, chunkSize int, palette color.Palett
 		}
 		for chunkStart := 0; chunkStart < len(aln[i].Seq); chunkStart += chunkSize {
 			chunkText := dna.BasesToString(aln[i].Seq[chunkStart:(chunkStart + chunkSize)])
-			incrementOrAdd(list, chunkText)
+			gapCount := strings.Count(chunkText, "-")
+			switch gapCount {
+				case chunkSize: /* ignore if all gaps */
+				case 0:
+					list = incrementOrAdd(list, chunkText)
+				default:
+					return nil, fmt.Errorf("Error: %s should be either all gaps or no gaps\n", chunkText)
+			}
 		}
 	}
-	sort.Slice(list, func(i, j int) bool { return list[i].Value < list[j].Value })
+	fmt.Printf("Number of chunks recorded: %d\n", len(list))
+	sort.Slice(list, func(i, j int) bool { return list[i].Value > list[j].Value })
 
 	for i := 0; i < len(list) && i < len(palette); i++ {
 		answer[list[i].Key] = palette[i]
@@ -48,29 +56,31 @@ func determineChunkColors(aln []fasta.Fasta, chunkSize int, palette color.Palett
 	return answer, nil
 }
 
-func drawAlignedChunks(aln []fasta.Fasta, chunkSize int, chunkPixelWidth int, chunkPixelHeight int, border int, seqPixelSpacing int) (*image.RGBA, error) {
+func DrawAlignedChunks(aln []fasta.Fasta, chunkSize int, chunkPixelWidth int, chunkPixelHeight int, border int, seqPixelSpacing int) (*image.RGBA, error) {
 	colorMap, err := determineChunkColors(aln, chunkSize, draw.TrubetskoyPalette[:19])
+	fmt.Printf("colors to be used: %v\n", colorMap)
 	if err != nil {
 		return nil, err
 	}
 	allGaps := strings.Repeat("-", chunkSize)
-	colorMap[allGaps] = draw.TrubetskoyPalette[21]
+	colorMap[allGaps] = draw.TrubetskoyPalette[21] /* black */
 
 	alnLength := len(aln[0].Seq)
 	numSeq := len(aln)
-	imageWidth := border*2 + alnLength/chunkSize*chunkPixelWidth
-	imageHeight := border*2 + chunkPixelHeight*numSeq
+	imageWidth := border*2 + alnLength / chunkSize * chunkPixelWidth
+	imageHeight := border*2 + chunkPixelHeight * numSeq + seqPixelSpacing * (numSeq-1)
 	img := image.NewRGBA(image.Rect(0, 0, imageWidth, imageHeight))
+	draw.FilledRectangle(img, 0, 0, imageWidth, imageHeight, draw.TrubetskoyPalette[20]) /* make everything white to start */
 	for i, _ := range aln {
 		for chunkStart := 0; chunkStart < len(aln[i].Seq); chunkStart += chunkSize {
 			chunkText := dna.BasesToString(aln[i].Seq[chunkStart:(chunkStart + chunkSize)])
 			chunkColor, found := colorMap[chunkText]
 			if !found {
-				chunkColor = draw.TrubetskoyPalette[19]
+				chunkColor = draw.TrubetskoyPalette[19] /* gray */
 			}
 			xStart := border + chunkStart/chunkSize*chunkPixelWidth
 			xEnd := xStart + chunkPixelWidth
-			yStart := border + i*chunkPixelHeight
+			yStart := border + i*chunkPixelHeight + (i-1)*seqPixelSpacing
 			yEnd := yStart + chunkPixelHeight
 			draw.FilledRectangle(img, xStart, yStart, xEnd, yEnd, chunkColor)
 		}
