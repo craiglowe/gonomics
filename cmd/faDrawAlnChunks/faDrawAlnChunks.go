@@ -1,15 +1,15 @@
 package main
 
 import (
-	"os"
 	"flag"
 	"fmt"
-	"github.com/craiglowe/gonomics/fasta"
 	"github.com/craiglowe/gonomics/align"
-	"log"
-	"strconv"
 	"github.com/craiglowe/gonomics/common"
+	"github.com/craiglowe/gonomics/fasta"
 	"image/png"
+	"log"
+	"os"
+	"strconv"
 )
 
 func faDrawAlnChunks(faAlnFilename string, chunkSize int, imageOutFilename string) {
@@ -32,12 +32,12 @@ func faDrawAlnChunks(faAlnFilename string, chunkSize int, imageOutFilename strin
 
 func usage() {
 	fmt.Fprint(os.Stderr,
-		"faDrawAlnChunks - Align two or more sequeces by \"chunks\" of bases\n" +
-		"                   instead of by single bases.  Each sequence must\n" +
-		"                   have a length that is divisible by the chunk size.\n" +
-		"Usage:\n" +
-		" faDrawAlnChunks aligned.fa chunkSize imageOut.png\n" +
-		"options:\n")
+		"faDrawAlnChunks - Align two or more sequeces by \"chunks\" of bases\n"+
+			"                   instead of by single bases.  Each sequence must\n"+
+			"                   have a length that is divisible by the chunk size.\n"+
+			"Usage:\n"+
+			" faDrawAlnChunks aligned.fa chunkSize imageOut.png\n"+
+			"options:\n")
 	flag.PrintDefaults()
 }
 

@@ -49,17 +49,21 @@ func Read(filename string) ([]Fasta, error) {
 func WriteToFileHandle(file *os.File, records []Fasta, lineLength int) error {
 	var err error
 	for _, rec := range records {
-                _, err = fmt.Fprintf(file, ">%s\n", rec.Name)
-                for i := 0; i < len(rec.Seq); i += lineLength {
-                        if i+lineLength > len(rec.Seq) {
-                                _, err = fmt.Fprintf(file, "%s\n", dna.BasesToString(rec.Seq[i:]))
-				if err != nil { return err }
-                        } else {
-                                _, err = fmt.Fprintf(file, "%s\n", dna.BasesToString(rec.Seq[i:i+lineLength]))
-				if err != nil { return err }
-                        }
-                }
-        }
+		_, err = fmt.Fprintf(file, ">%s\n", rec.Name)
+		for i := 0; i < len(rec.Seq); i += lineLength {
+			if i+lineLength > len(rec.Seq) {
+				_, err = fmt.Fprintf(file, "%s\n", dna.BasesToString(rec.Seq[i:]))
+				if err != nil {
+					return err
+				}
+			} else {
+				_, err = fmt.Fprintf(file, "%s\n", dna.BasesToString(rec.Seq[i:i+lineLength]))
+				if err != nil {
+					return err
+				}
+			}
+		}
+	}
 	return nil
 }
 
@@ -76,17 +80,21 @@ func Write(filename string, records []Fasta) error {
 
 func WriteGroups(filename string, groups [][]Fasta) error {
 	lineLength := 50
-        file, err := os.Create(filename)
-        if err != nil {
-                return err
-        }
-        defer file.Close()
+	file, err := os.Create(filename)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
 
 	for i, _ := range groups {
 		err := WriteToFileHandle(file, groups[i], lineLength)
-		if err != nil { return err }
+		if err != nil {
+			return err
+		}
 		_, err = fmt.Fprint(file, "\n")
-                if err != nil { return err }
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }

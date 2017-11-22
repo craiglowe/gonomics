@@ -38,11 +38,11 @@ func determineChunkColors(aln []fasta.Fasta, chunkSize int, palette color.Palett
 			chunkText := dna.BasesToString(aln[i].Seq[chunkStart:(chunkStart + chunkSize)])
 			gapCount := strings.Count(chunkText, "-")
 			switch gapCount {
-				case chunkSize: /* ignore if all gaps */
-				case 0:
-					list = incrementOrAdd(list, chunkText)
-				default:
-					return nil, fmt.Errorf("Error: %s should be either all gaps or no gaps\n", chunkText)
+			case chunkSize: /* ignore if all gaps */
+			case 0:
+				list = incrementOrAdd(list, chunkText)
+			default:
+				return nil, fmt.Errorf("Error: %s should be either all gaps or no gaps\n", chunkText)
 			}
 		}
 	}
@@ -67,8 +67,8 @@ func DrawAlignedChunks(aln []fasta.Fasta, chunkSize int, chunkPixelWidth int, ch
 
 	alnLength := len(aln[0].Seq)
 	numSeq := len(aln)
-	imageWidth := border*2 + alnLength / chunkSize * chunkPixelWidth
-	imageHeight := border*2 + chunkPixelHeight * numSeq + seqPixelSpacing * (numSeq-1)
+	imageWidth := border*2 + alnLength/chunkSize*chunkPixelWidth
+	imageHeight := border*2 + chunkPixelHeight*numSeq + seqPixelSpacing*(numSeq-1)
 	img := image.NewRGBA(image.Rect(0, 0, imageWidth, imageHeight))
 	draw.FilledRectangle(img, 0, 0, imageWidth, imageHeight, draw.TrubetskoyPalette[20]) /* make everything white to start */
 	for i, _ := range aln {

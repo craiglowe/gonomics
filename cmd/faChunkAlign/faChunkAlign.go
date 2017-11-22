@@ -1,14 +1,14 @@
 package main
 
 import (
-	"os"
 	"flag"
 	"fmt"
-	"github.com/craiglowe/gonomics/fasta"
 	"github.com/craiglowe/gonomics/align"
-	"log"
-	"strconv"
 	"github.com/craiglowe/gonomics/common"
+	"github.com/craiglowe/gonomics/fasta"
+	"log"
+	"os"
+	"strconv"
 )
 
 func faChunkAlign(inFile string, chunkSize int, outFile string) {
@@ -27,12 +27,12 @@ func faChunkAlign(inFile string, chunkSize int, outFile string) {
 
 func usage() {
 	fmt.Fprint(os.Stderr,
-		"faChunkAlign - Align two or more sequeces by \"chunks\" of bases\n" +
-		"                instead of by single bases.  Each sequence must\n" +
-		"                have a length that is divisible by the chunk size.\n" +
-		"Usage:\n" +
-		" faChunkAlign unaligned.fa chunkSize aligned.fa\n" +
-		"options:\n")
+		"faChunkAlign - Align two or more sequeces by \"chunks\" of bases\n"+
+			"                instead of by single bases.  Each sequence must\n"+
+			"                have a length that is divisible by the chunk size.\n"+
+			"Usage:\n"+
+			" faChunkAlign unaligned.fa chunkSize aligned.fa\n"+
+			"options:\n")
 	flag.PrintDefaults()
 }
 

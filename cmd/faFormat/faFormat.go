@@ -3,10 +3,10 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/craiglowe/gonomics/fasta"
 	"github.com/craiglowe/gonomics/common"
-	"os"
+	"github.com/craiglowe/gonomics/fasta"
 	"log"
+	"os"
 )
 
 func faFormat(inFile string, outFile string, lineLength int) {
@@ -14,10 +14,10 @@ func faFormat(inFile string, outFile string, lineLength int) {
 	common.ExitIfError(err)
 
 	file, err := os.Create(outFile)
-        common.ExitIfError(err)
-        defer file.Close()
+	common.ExitIfError(err)
+	defer file.Close()
 
-        err = fasta.WriteToFileHandle(file, records, lineLength)
+	err = fasta.WriteToFileHandle(file, records, lineLength)
 	common.ExitIfError(err)
 }
 

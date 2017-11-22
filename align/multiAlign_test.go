@@ -34,8 +34,8 @@ func TestMultiAlignGap(t *testing.T) {
 		}
 
 		if !fasta.AllAreEqualIgnoreOrder(alignedChunk, expected) {
-                        fasta.Write("testdata/multiAlignTest.tmp", alignedChunk)
-                        t.Errorf("Alignment not as expected: testdata/multiAlignTest.tmp does not equal %s", test.expected)
-                }
+			fasta.Write("testdata/multiAlignTest.tmp", alignedChunk)
+			t.Errorf("Alignment not as expected: testdata/multiAlignTest.tmp does not equal %s", test.expected)
+		}
 	}
 }
