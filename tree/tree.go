@@ -33,8 +33,8 @@ func splittingCommaIndex(input string) int {
 }
 
 func parseNewick(input string) (*Tree, error) {
-	if !strings.HasPrefix(input, "(") || !strings.HasSuffix(input, ");") {
-		return nil, fmt.Errorf("Error: tree %s should start with '(' and end with ');'", input)
+	if !strings.HasPrefix(input, "(") || !strings.HasSuffix(input, ";") {
+		return nil, fmt.Errorf("Error: tree %s should start with '(' and end with ';'", input)
 	}
 	return parseNewickHelper(input[:len(input)-1])
 }
@@ -42,7 +42,7 @@ func parseNewick(input string) (*Tree, error) {
 func splitNameAndLength(input string) (string, float64, bool, error) {
 	numColon := strings.Count(input, ":")
 	if numColon == 0 {
-		return input, 0, true, nil
+		return input, 1, true, nil
 	} else if numColon == 1 {
 		lastColon := strings.LastIndex(input, ":")
 		name := input[:lastColon]
@@ -59,9 +59,9 @@ func parseNewickHelper(input string) (*Tree, error) {
 	var answer Tree
 	var err error
 
-	/* all the character finding is up front and then all the logic follows
-	   this is inefficient, but parsing trees should not be a limiting step
-	   and I think this makes it more readable */
+	// all the character finding is up front and then all the logic follows
+	// this is inefficient, but parsing trees should not be a limiting step
+	// and I think this makes it more readable
 	numOpen := strings.Count(input, "(")
 	numClosed := strings.Count(input, ")")
 	numComma := strings.Count(input, ",")
@@ -81,7 +81,7 @@ func parseNewickHelper(input string) (*Tree, error) {
 		return nil, fmt.Errorf("Error: %s should have a number of colons equal to zero or twice the number of colons (with another possible for the root branch)\n", input)
 	}
 
-	answer = Tree{Name: "", OnlyTopology: true, BranchLength: 0, Left: nil, Right: nil}
+	answer = Tree{Name: "", OnlyTopology: true, BranchLength: 1, Left: nil, Right: nil}
 	if numOpen == 0 { /* leaf node */
 		answer.Name, answer.BranchLength, answer.OnlyTopology, err = splitNameAndLength(input)
 		if err != nil {
