@@ -6,6 +6,8 @@ import (
 
 type Base byte
 
+// TODO: change these names so that all variables can be seen
+// from outside.  Maybe BaseA, Basea, etc
 const (
 	A   Base = 0
 	C   Base = 1
