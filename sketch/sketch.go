@@ -1,11 +1,11 @@
 package sketch
 
 import (
+	"golang.org/x/image/font"
+	"golang.org/x/image/font/basicfont"
+	"golang.org/x/image/math/fixed"
 	"image"
 	"image/color"
-        "golang.org/x/image/font"
-        "golang.org/x/image/font/basicfont"
-        "golang.org/x/image/math/fixed"
 	//"golang.org/x/image/font/inconsolata"
 )
 
@@ -37,15 +37,14 @@ func FilledRectangle(img *image.RGBA, xOne int, yOne int, xTwo int, yTwo int, co
 }
 
 func Text(img *image.RGBA, label string, xStart int, yStart int) {
-        point := fixed.Point26_6{fixed.Int26_6(xStart * 64), fixed.Int26_6(yStart * 64)}
+	point := fixed.Point26_6{fixed.Int26_6(xStart * 64), fixed.Int26_6(yStart * 64)}
 
-        d := &font.Drawer{
-                Dst:  img,
-                Src:  image.NewUniform(color.Black),
-                Face: basicfont.Face7x13,
-                //Face: inconsolata.Regular8x16,
-                Dot: point,
-        }
-        d.DrawString(label)
+	d := &font.Drawer{
+		Dst:  img,
+		Src:  image.NewUniform(color.Black),
+		Face: basicfont.Face7x13,
+		//Face: inconsolata.Regular8x16,
+		Dot: point,
+	}
+	d.DrawString(label)
 }
-

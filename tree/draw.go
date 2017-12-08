@@ -2,7 +2,7 @@ package tree
 
 import (
 	"fmt"
-	"github.com/craiglowe/gonomics/draw"
+	"github.com/craiglowe/gonomics/sketch"
 	"golang.org/x/image/font"
 	"golang.org/x/image/font/basicfont"
 	"golang.org/x/image/math/fixed"
@@ -32,11 +32,11 @@ func drawHelper(img *image.RGBA, node *Tree, heightAbove float64, pixelsPerBranc
 	if node.Left != nil {
 		yStart := drawHelper(img, node.Left, heightAbove+node.BranchLength, pixelsPerBranchLength, pixelsPerNode, nodesPrinted)
 		yEnd := *nodesPrinted*pixelsPerNode + pixelsPerNode/2
-		draw.VLine(img, x, yStart, yEnd, color.Black)
+		sketch.VLine(img, x, yStart, yEnd, color.Black)
 	}
 
 	y := *nodesPrinted*pixelsPerNode + pixelsPerNode/2
-	draw.HLine(img, xStart, xEnd, y, color.Black)
+	sketch.HLine(img, xStart, xEnd, y, color.Black)
 	*nodesPrinted = *nodesPrinted + 1
 	addLabel(img, node.Name, x+5, *nodesPrinted*pixelsPerNode)
 
@@ -44,7 +44,7 @@ func drawHelper(img *image.RGBA, node *Tree, heightAbove float64, pixelsPerBranc
 		yStart := y
 		yEnd := drawHelper(img, node.Right, heightAbove+node.BranchLength, pixelsPerBranchLength, pixelsPerNode, nodesPrinted)
 		x := xEnd
-		draw.VLine(img, x, yStart, yEnd, color.Black)
+		sketch.VLine(img, x, yStart, yEnd, color.Black)
 	}
 
 	return y
@@ -53,7 +53,7 @@ func drawHelper(img *image.RGBA, node *Tree, heightAbove float64, pixelsPerBranc
 func Draw(node *Tree, imageWidth int, imageHeight int) (*image.RGBA, error) {
 	//totalHeight := Height(node)
 	img := image.NewRGBA(image.Rect(0, 0, imageWidth, imageHeight))
-	draw.FilledRectangle(img, 0, 0, imageWidth, imageHeight, color.White)
+	sketch.FilledRectangle(img, 0, 0, imageWidth, imageHeight, color.White)
 
 	if node == nil {
 		return img, fmt.Errorf("Error: unable to draw an empty tree\n")

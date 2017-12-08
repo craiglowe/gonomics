@@ -1,4 +1,4 @@
-package draw
+package sketch
 
 import (
 	"image/color"
