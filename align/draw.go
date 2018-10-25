@@ -3,7 +3,7 @@ package align
 import (
 	"fmt"
 	"github.com/craiglowe/gonomics/dna"
-	"github.com/craiglowe/gonomics/draw"
+	"github.com/craiglowe/gonomics/sketch"
 	"github.com/craiglowe/gonomics/fasta"
 	"image"
 	"image/color"
@@ -57,32 +57,32 @@ func determineChunkColors(aln []fasta.Fasta, chunkSize int, palette color.Palett
 }
 
 func DrawAlignedChunks(aln []fasta.Fasta, chunkSize int, chunkPixelWidth int, chunkPixelHeight int, border int, seqPixelSpacing int) (*image.RGBA, error) {
-	colorMap, err := determineChunkColors(aln, chunkSize, draw.TrubetskoyPalette[:19])
+	colorMap, err := determineChunkColors(aln, chunkSize, sketch.TrubetskoyPalette[:19])
 	fmt.Printf("colors to be used: %v\n", colorMap)
 	if err != nil {
 		return nil, err
 	}
 	allGaps := strings.Repeat("-", chunkSize)
-	colorMap[allGaps] = draw.TrubetskoyPalette[21] /* black */
+	colorMap[allGaps] = sketch.TrubetskoyPalette[21] /* black */
 
 	alnLength := len(aln[0].Seq)
 	numSeq := len(aln)
 	imageWidth := border*2 + alnLength/chunkSize*chunkPixelWidth
 	imageHeight := border*2 + chunkPixelHeight*numSeq + seqPixelSpacing*(numSeq-1)
 	img := image.NewRGBA(image.Rect(0, 0, imageWidth, imageHeight))
-	draw.FilledRectangle(img, 0, 0, imageWidth, imageHeight, draw.TrubetskoyPalette[20]) /* make everything white to start */
+	sketch.FilledRectangle(img, 0, 0, imageWidth, imageHeight, sketch.TrubetskoyPalette[20]) /* make everything white to start */
 	for i, _ := range aln {
 		for chunkStart := 0; chunkStart < len(aln[i].Seq); chunkStart += chunkSize {
 			chunkText := dna.BasesToString(aln[i].Seq[chunkStart:(chunkStart + chunkSize)])
 			chunkColor, found := colorMap[chunkText]
 			if !found {
-				chunkColor = draw.TrubetskoyPalette[19] /* gray */
+				chunkColor = sketch.TrubetskoyPalette[19] /* gray */
 			}
 			xStart := border + chunkStart/chunkSize*chunkPixelWidth
 			xEnd := xStart + chunkPixelWidth
 			yStart := border + i*chunkPixelHeight + (i-1)*seqPixelSpacing
 			yEnd := yStart + chunkPixelHeight
-			draw.FilledRectangle(img, xStart, yStart, xEnd, yEnd, chunkColor)
+			sketch.FilledRectangle(img, xStart, yStart, xEnd, yEnd, chunkColor)
 		}
 	}
 	return img, nil
